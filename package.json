@@ -7,11 +7,19 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
+    "axios": "^0.20.0",
+    "bootstrap": "^4.5.2",
     "core-js": "^3.6.5",
-    "vue": "^2.6.11"
+    "jquery": "^3.5.1",
+    "jw-vue-pagination": "^1.0.3",
+    "paginationjs": "^2.1.5",
+    "vue": "^2.6.11",
+    "vue-axios": "^2.1.5",
+    "vue-router": "^3.2.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",
+    "@vue/cli-plugin-router": "^4.5.4",
     "@vue/cli-service": "~4.5.0",
     "node-sass": "^4.12.0",
     "sass-loader": "^8.0.2",
