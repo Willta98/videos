@@ -1,15 +1,23 @@
 <template>
   <div>
+    <div id="loading">
+      <img
+        src="https://thumbs.gfycat.com/SoggyFoolhardyCopperbutterfly-small.gif"
+        alt="loading.."
+        width="300"
+      />
+    </div>
   <div class="container">
    <div class="row justify-content-center">
      <div class="col-md-10">
        <div class="row">
-        <div class="col-md-4 d-flex justify-content-center" v-for="(item,index) in pageOfItems" :key="index">
+        <div class="col-md-4 d-flex justify-content-center mb-5" v-for="(item,index) in pageOfItems" :key="index">
          <div class="card" style="width: 18rem;">
+           <a href="javascript:void(0)" @click="getdetail(item)">
             <img class="card-img-top" :src="item.img" alt="Card image cap">
+            </a>
              <div class="card-body">
              <p class="card-title">{{item.title}}</p>
-             <p class="card-title">時間 : {{item.time}}</p>
              <div class="text-center">
              <div><button class="btn btn-primary" @click="setlocal(item)" v-if="item.favItem === false">收藏</button></div>
              <div><button class="btn btn-danger" @click="remove(item)" v-if="item.favItem === true">取消收藏</button></div>
@@ -21,7 +29,10 @@
        </div> 
      </div>
        <div class="card-footer pb-0 pt-3">
-            <pagination :items="exampleItems" @changePage="onChangePage" :styles="customStyles" :labels="customLabels"></pagination>
+          <a href="#">
+            <pagination :items="exampleItems" @changePage="onChangePage" 
+            :styles="customStyles" :labels="customLabels"  v-if="exampleItems.length>3"></pagination>
+            </a>
         </div>
    </div>    
   </div>
@@ -51,10 +62,9 @@ export default {
      },
   data(){
     return{
+      searchid:"",
       items:[],
       itemsa:[],
-      timer:[],
-      arraytime:[],
       title:[],
       id:[],
       img:[],
@@ -71,14 +81,15 @@ export default {
     }
   },
   methods:{
+   putid(){
+
+      },
    get() {
       const vm = this;
       let urla = `https://www.googleapis.com/youtube/v3/videos?chart=mostPopular&key=AIzaSyDVD4p8eyb0jUbL6uJS9Sr_byz8t9n8aVo&part=snippet,contentDetails&maxResults=50&pageToken=CBQQAA`;
-      let url = `https://www.googleapis.com/youtube/v3/videos?chart=mostPopular&key=AIzaSyDVD4p8eyb0jUbL6uJS9Sr_byz8t9n8aVo&part=snippet,contentDetails&maxResults=100`;
-      
+      let url = `https://www.googleapis.com/youtube/v3/videos?chart=mostPopular&key=AIzaSyDVD4p8eyb0jUbL6uJS9Sr_byz8t9n8aVo&part=snippet,contentDetails&maxResults=50`;
       vm.$http.get(urla).then((response) =>{
-        vm.itemsa = response.data.items
-      
+        vm.itemsa = response.data.items  
       vm.$http.get(url).then((response) => {
         vm.items = response.data.items
         vm.items = vm.items.concat(vm.itemsa);
@@ -86,27 +97,10 @@ export default {
           vm.title.push(item.snippet.title)
           vm.id.push(item.id)
           vm.img.push(item.snippet.thumbnails.medium.url)
-        });
-        vm.timer = vm.items.map((item) => {
-           return item.contentDetails.duration
-        });
-        vm.timer.forEach((item) => {
-          item = item.split('')
-           for (let i = 0; i < item.length; i++) {
-            if (item[i] == "P") {
-            item.splice(i, 1);
-             if(item[i] == "T"){
-              item.splice(i, 1);
-              }
-            }
-          } 
-            item = item.join('')
-            vm.arraytime.push(item)
-        });
+          });
           for (let i = 0; i < vm.id.length; i++) {
             let obj = {
               title : vm.title[i],
-              time : vm.arraytime[i],
               id : vm.id[i],
               img : vm.img[i],
               favItem : false
@@ -114,7 +108,7 @@ export default {
             vm.alldata.push(obj)
          }
 
-         vm.exampleItems = vm.alldata
+        vm.exampleItems = vm.alldata
 
         const localdata = JSON.parse(localStorage.getItem('item') || '[]');
         let localtitle = '';
@@ -127,6 +121,7 @@ export default {
             }
           });
         });
+         $('#loading').css('display', 'none');
       });
       })
    },
@@ -158,11 +153,34 @@ export default {
             
             vm.pageOfItems = pageOfItems;
      },
+   getdetail(item){
+      const vm = this;
+      vm.$router.push(`/${item.id}`);
+   }
   },
   created() {
     this.get()
   },
 }
 </script>
+
+
+<style lang="scss">
+  #loading {
+    position: fixed;
+    z-index: 400;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0%;
+    text-align: center;
+    font-size: 0.9rem;
+    color: #595758;
+    background-color: white;
+    opacity: 0.9;
+    // display: none;
+}
+</style>
+
 
 
